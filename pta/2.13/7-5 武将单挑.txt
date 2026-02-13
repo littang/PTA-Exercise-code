@@ -1,0 +1,329 @@
+7-5 武将单挑
+分数 100
+作者 scs
+单位 北京邮电大学
+你正在玩一款即时策略游戏，游戏中有若干君主（你是其中之一），每个君主手下都有若干武将。每名武将都有一个战力值。君主之间进行战争时有一个很奇怪的武将单挑模式。在该模式下，对战的君主每次各派出一名武将单挑，如果两个武将打平，则双方要再各派一个武将进行单挑，直到分出胜负为止。假设双方在第n次单挑中分出了胜负，则单挑获胜方取得战争胜利。如果一方没有武将可派了（一次战斗出战过的武将不能再次出战），而另一方有，则没有武将方失败。该模式似乎是大家单挑时把战力值大的先派出去即可。然而游戏并没有这么简单，游戏内部的策略是武将单挑时，将武将的战力值模除一个数，然后比较模除后的余数，余数大的会在单挑中获胜。这样各君主很难知道如何派将了。现在假设要模除的数为101，在这种单挑模式下，请你写一段程序来为各个君主排名。
+
+提示：此题内存使用有限制。直接创建二维数组保存数据估计可以过60%的数据
+
+输入格式:
+第一行为一个整数n(1<n<5000)，代表君主的个数。然后每个君主两行数据，格式为第一行是一个整数m(0<m<1000)，代表该君主拥有武将的个数，第二行是m个整数，代表该君主依次派出的武将的战力值。
+
+测试用例保证合法，且所有整数均可以用int类型存储。
+
+输出格式:
+共n行，每行为输入中一个君主的武将的战力值（按输入顺序原样输出），在此种单挑模式中最强的君主的数据最先输出，然后是第二强的，以此类推，最后输出是最弱的。
+
+输入样例:
+5
+10
+771 748 210 693 992 297 473 40 891 973
+3
+103 40 466
+6
+525 769 183 484 776 307
+6
+129 47 601 371 775 569
+3
+197 41 184
+输出样例:
+197 41 184
+771 748 210 693 992 297 473 40 891 973
+129 47 601 371 775 569
+525 769 183 484 776 307
+103 40 466
+
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct{
+    int hoursNum;
+    int *fight;
+    int score;
+}CHO;
+//当用数组很烧脑是，就应该用结构体加动态指针了
+//感觉期末只会在矩阵的题目上用二维数组
+int loseOne(CHO *a, CHO *b) {
+    int i = 0;
+    while (1) {
+        // 检查是否有一方已无武将
+        if (i >= a->hoursNum && i >= b->hoursNum) {
+            return 0;  // 平局
+        }
+        if (i >= a->hoursNum) {
+            return -1;  // A没有武将了，B赢
+        }
+        if (i >= b->hoursNum) {
+            return 1;   // B没有武将了，A赢
+        }
+        
+        // 这里又忘记题目要求了，比较模101的余数
+        int ra = a->fight[i] % 101;
+        int rb = b->fight[i] % 101;
+        
+        if (ra > rb) {
+            return 1;  // A赢
+        }
+        if (ra < rb) {
+            return -1; // B赢
+        }
+        
+        i++;  // 平局，继续比较下一个武将
+    }
+}
+int main(){
+    int n;
+    scanf("%d",&n);
+    CHO *a=(CHO *)malloc(sizeof(CHO)*n);
+    for(int i=0;i<n;i++){
+        scanf("%d",&a[i].hoursNum);
+        a[i].fight=(int *)malloc(sizeof(int)*a[i].hoursNum);
+        
+        a[i].score=0;
+        
+        for(int j=0;j<a[i].hoursNum;j++){
+            scanf("%d",&a[i].fight[j]);
+        }
+    }
+   for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j) continue;
+            
+            int result = loseOne(&a[i], &a[j]);
+            if (result == 1) {
+                a[i].score++;
+            }
+        }
+    }
+    //下面那这个是排序的，因为选择排序只是要找到这一轮最大的放到后面
+    //而比较得分是要一队和其他所有队伍都比一遍
+   //因为j<n-1-i，所以到后面的组就比不了所有其他组了
+   //所以双循环不要乱套，想清楚题目再进行模拟
+    // //for(int i=0;i<n;i++){
+    //     for(int j=0;j<n-1-i;j++){
+    //         if(loseOne(&a[j],&a[j+1])==-1){
+    //             a[j].score++;
+    //         }
+    //         else if(loseOne(&a[j],&a[j+1])==1){
+    //             a[j+1].score++;
+    //         }
+    //     }
+    // }
+    for(int i=0;i<n-1;i++){
+        //这里也错了，选择排序第一层是和排序次数有关
+        for(int j=0;j<n-1-i;j++){
+            if(a[j].score<a[j+1].score){
+                CHO b=a[j];
+                a[j]=a[j+1];
+                a[j+1]=b;
+            }
+        }
+    }
+    for(int i=0;i<n;i++){
+        for(int j=0;j<a[i].hoursNum;j++){
+            if(j==0)printf("%d",a[i].fight[j]);
+            else printf(" %d",a[i].fight[j]);
+            //修正打印：
+            //原来是printf("%d", a[i].fight)，这是错误的
+            //应该是printf("%d", a[i].fight[j])
+        }
+        printf("\n");
+    }
+    for(int i=0;i<n;i++){
+        free(a[i].fight);
+        //修正内存释放：
+//修正了释放内存的循环条件,是n,不是a[i].hoursNum
+    }
+    free(a);
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+错误#include<stdio.h>
+#include<stdlib.h>
+typedef struct{
+    int hoursNum;
+    int *fight;
+    int score;
+}CHO;
+int loseOne(CHO *a,CHO *b){
+    for(int i=0;;i++){
+        if(i>=a->hoursNum)return 1;
+        else if(i>=b->hoursNum)return -1;
+        else {
+            for(int j=0;;j++){
+                if(a->fight[j]<b->fight[j])
+                return 1;
+                else if(a->fight[j]>b->fight[j])
+                return -1;
+            }
+        }
+    }
+}
+int main(){
+    int n;
+    scanf("%d",&n);
+    CHO *a=(CHO *)malloc(sizeof(CHO)*n);
+    for(int i=0;i<n;i++){
+        scanf("%d",&a[i].hoursNum);
+        a[i].fight=(int *)malloc(sizeof(int)*a[i].hoursNum);
+        for(int j=0;j<a[i].hoursNum;j++){
+            scanf("%d",&a[i].fight[j]);
+        }
+    }
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n-1-i;j++){
+            if(loseOne(&a[j],&a[j+1])==-1){
+                a[j].score++;
+            }
+            else if(loseOne(&a[j],&a[j+1])==1){
+                a[j+1].score++;
+            }
+        }
+    }
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n-1-i;j++){
+            if(a[j].score<a[j+1].score){
+                CHO b=a[j];
+                a[j]=a[j+1];
+                a[j+1]=b;
+            }
+        }
+    }
+    for(int i=0;i<n;i++){
+        for(int j=0;j<a[i].hoursNum;j++){
+            if(j==0)printf("%d",a[i].fight);
+            else printf(" %d",a[i].fight);
+        }
+        printf("\n");
+    }
+    for(int i=0;i<a[i].hoursNum;i++){
+        free(a[i].fight);
+    }
+    free(a);
+    return 0;
+}
+我发现了您代码中的几个问题。让我们逐步分析并修正：
+主要问题：
+逻辑错误：loseOne函数没有正确实现比较逻辑
+内存管理错误：在交换结构体时没有正确处理动态分配的数组
+排序逻辑错误：冒泡排序的嵌套循环逻辑不对
+比较方式错误：没有使用模101的比较
+打印错误：打印时没有正确访问数组元素
+修正后的代码：
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int hoursNum;
+    int *fight;
+    int index;       // 保存原始顺序
+    int score;
+} CHO;
+
+// 比较函数：返回1表示A赢B，-1表示B赢A，0表示平局
+int compareOne(CHO *a, CHO *b) {
+    int i = 0;
+    while (1) {
+        // 检查是否有一方已无武将
+        if (i >= a->hoursNum && i >= b->hoursNum) {
+            return 0;  // 平局
+        }
+        if (i >= a->hoursNum) {
+            return -1;  // A没有武将了，B赢
+        }
+        if (i >= b->hoursNum) {
+            return 1;   // B没有武将了，A赢
+        }
+        
+        // 比较模101的余数
+        int ra = a->fight[i] % 101;
+        int rb = b->fight[i] % 101;
+        
+        if (ra > rb) {
+            return 1;  // A赢
+        }
+        if (ra < rb) {
+            return -1; // B赢
+        }
+        
+        i++;  // 平局，继续比较下一个武将
+    }
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    
+    CHO *a = (CHO *)malloc(sizeof(CHO) * n);
+    
+    // 读取数据
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &a[i].hoursNum);
+        a[i].fight = (int *)malloc(sizeof(int) * a[i].hoursNum);
+        a[i].index = i;
+        a[i].score = 0;
+        
+        for (int j = 0; j < a[i].hoursNum; j++) {
+            scanf("%d", &a[i].fight[j]);
+        }
+    }
+    
+    // 计算每个君主的得分（赢的次数）
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j) continue;
+            
+            int result = compareOne(&a[i], &a[j]);
+            if (result == 1) {
+                a[i].score++;
+            }
+        }
+    }
+    
+    // 按得分降序排序，得分相同的保持原始顺序
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - 1 - i; j++) {
+            if (a[j].score < a[j + 1].score) {
+                // 交换结构体
+                CHO temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+            }
+        }
+    }
+    
+    // 输出结果
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < a[i].hoursNum; j++) {
+            if (j == 0) {
+                printf("%d", a[i].fight[j]);
+            } else {
+                printf(" %d", a[i].fight[j]);
+            }
+        }
+        printf("\n");
+    }
+    
+    // 释放内存
+    for (int i = 0; i < n; i++) {
+        free(a[i].fight);
+    }
+    free(a);
+    
+    return 0;
+}
+主要修改：
+重写比较函数：
+正确比较模101的余数
+处理平局时继续比较下一个武将
+正确处理一方无武将可派的情况
+修正排序逻辑：
+先计算所有君主之间的对战得分
+然后按得分降序排序
+保持相同得分的原始顺序
+修正打印：
+原来是printf("%d", a[i].fight)，这是错误的
+应该是printf("%d", a[i].fight[j])
+修正内存释放：
+修正了释放内存的循环条件
+这个修正后的代码应该能正确计算对战结果，并按要求输出排名。

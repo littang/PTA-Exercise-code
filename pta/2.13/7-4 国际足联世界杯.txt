@@ -1,0 +1,178 @@
+7-4 国际足联世界杯
+分数 100
+作者 scs
+单位 北京邮电大学
+国际足联世界杯（FIFA World Cup），简称“世界杯”，每四年举办一次，由国际足球联合会旗下会员协会球队参加。世界杯全球电视转播观众超过35亿，是具有最大知名度和影响力的足球赛事，象征着足球界最高荣誉。
+世界杯小组赛的32支参赛队分为八个小组，每组四队进行比赛。每支球队都必须和其他三支球队进行且只进行一场比赛，胜者得三分，负者不得分，打平双方各得一分。小组赛排名规则如下：
+    a、积分高者排名靠前；
+    b、小组中总净胜球高者排名靠前；（总净胜球指的是该队总的进球数减去总的失球数）
+    c、小组中总进球数高者排名靠前。
+现在我们假设依次采用a、b、c三条规则后没有排名相同的队伍，请写出判断各个队伍排名的程序。
+
+输入格式:
+共4行，每行一个字符串和3个整数，字符串为国家的名字(只包含大小写字母且长度不会超过30)，3个用空格分隔整数(大于等于0且小于20)依次为该队的总进球数、总失球数和积分。
+
+输出格式:
+共4行，每行一个字符串，为4个参赛国的名字（按排名由高到低依次输出）。
+
+输入样例:
+Brazil 2 6 2
+China 11 1 9
+Germany 3 6 2
+Italy 2 5 2
+
+输出样例:
+China
+Germany
+Italy
+Brazil
+
+注意点
+1，传值调用是C++才有的，oj上用不了，应该是这样的，把*a看成一个值
+void f(FOOT *a,FOOT *b){
+    FOOT swap=*a;
+    *a=*b;
+    *b=swap;
+}
+
+f(&con[j],&con[j+1]);
+
+2，调用时，情况要分清楚，如这道题，除了条件a,在判断条件b是否成立时，要写a条件分数线等
+f(con[j].grades < con[j+1].grades) {
+                need_swap = 1;
+            }
+            // 积分相同，规则2：比较净胜球
+            else if(con[j].grades == con[j+1].grades) {
+                int net_j = con[j].in - con[j].out;
+                int net_j1 = con[j+1].in - con[j+1].out;
+                
+                if(net_j < net_j1) {
+                    need_swap = 1;
+                }
+                // 净胜球相同，规则3：比较进球数
+                else if(net_j == net_j1) {
+                    if(con[j].in < con[j+1].in) {
+                        need_swap = 1;
+                    }
+                }
+            }
+3，调用时不要直接就换了，而且排序算法要用完全排序算法，不要用i,i+j那种了，不对，应为交换了之后用的是交换后的i去进行比较了
+这不是标准排序算法：没有明确的排序方向
+
+比较不完整：只和后面的元素比较，不保证最终顺序
+
+/////////交换后继续比较：交换后 con[i] 的值变了，但继续用新的 con[i] 和后面的比
+
+条件逻辑错误：三个 else if 条件没有覆盖所有情况
+
+
+4最后，可以学习一下在一次循环的最后再来判断要不要交换，这样比较好
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#include<stdio.h>
+#include<string.h>
+
+typedef struct 
+{
+    char nam[31];  // 国家名字
+    int in;        // 总进球数
+    int out;       // 总失球数
+    int grades;    // 积分
+} FOOT;
+
+int main() {
+    FOOT con[4];
+    
+    // 输入4支球队的数据
+    for(int i = 0; i < 4; i++) {
+        scanf("%s %d %d %d", con[i].nam, &con[i].in, &con[i].out, &con[i].grades);
+    }
+    
+    // 冒泡排序（降序）
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3 - i; j++) {
+            int need_swap = 0;
+            
+            // 规则1：比较积分（降序）
+            if(con[j].grades < con[j+1].grades) {
+                need_swap = 1;
+            }
+            // 积分相同，规则2：比较净胜球
+            else if(con[j].grades == con[j+1].grades) {
+                int net_j = con[j].in - con[j].out;
+                int net_j1 = con[j+1].in - con[j+1].out;
+                
+                if(net_j < net_j1) {
+                    need_swap = 1;
+                }
+                // 净胜球相同，规则3：比较进球数
+                else if(net_j == net_j1) {
+                    if(con[j].in < con[j+1].in) {
+                        need_swap = 1;
+                    }
+                }
+            }
+            
+            // 如果需要交换
+            if(need_swap) {
+                FOOT temp = con[j];
+                con[j] = con[j+1];
+                con[j+1] = temp;
+            }
+        }
+    }
+    
+    // 输出排序结果
+    for(int i = 0; i < 4; i++) {
+        printf("%s\n", con[i].nam);
+    }
+    
+    return 0;
+}
+
+
+
+
+错误示范
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+typedef struct 
+{
+    char nam[31];
+    int in;
+    int out;
+    int grades;
+}FOOT;
+void f(FOOT *a,FOOT *b){
+    FOOT swap=*a;
+    *a=*b;
+    *b=swap;
+}
+int main(){
+    FOOT con[4];
+    for(int i=0;i<4;i++){
+        scanf("%s %d %d %d",con[i].nam,&con[i].in,&con[i].out,&con[i].grades);
+    }
+    for(int i=0;i<4;i++){
+       for(int j=1;i+j<4;j++){
+        if(con[i].grades>con[i+j].grades){
+            f(&con[i],&con[i+j]);
+            
+        }
+        else if(con[i].in-con[i].out>con[i+j].in-con[i+j].out){
+            f(&con[i],&con[i+j]);
+           
+        }
+        else if(con[i].in>con[i+j].in){
+            f(&con[i],&con[i+j]);
+           
+        }
+      } 
+    }
+    for(int i=0;i<4;i++){
+        printf("%s\n",con[i].nam);
+    }
+    return 0;
+}
