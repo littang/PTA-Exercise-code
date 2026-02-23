@@ -1,0 +1,462 @@
+7-2 实验11_2_初识结构数组
+
+
+要用
+*stuPtr=stuArray[k];
+那么
+stuPtr就不能指向NULL；
+要一个有效地址才行，可以指向其他数组元素，也可以申请动态内存
+
+
+
+
+分数 100
+作者 scs
+单位 北京邮电大学
+有n名学生，每个学生的信息包括姓名、学号、5门课程的成绩，平均成绩与总成绩。已知学生的姓名、学号与5门课程的成绩，你的任务是计算每个学生的平均成绩与总成绩，并将它们输出。学生的姓名中只能包含大小写字母与空格字符，不会超过20个字符；学生的学号是个长度不会超过20的字符串，只包含数字字符；课程成绩均为0—100的整数。
+
+要求：在本题中，你要设计一个结构来存储一个学生的信息。在此结构中，需要有一个字符数组来存储姓名；一个字符数组来存储学号；一个长度为5的整型数组来存储5门课程的成绩；一个双精度浮点型变量存储平均成绩，一个整型变量存储总成绩。然后，你要设计一个结构数组来存储n名学生的信息。
+
+输入格式:
+输入首先是一个正整数n，代表学生的数量，1<=n<=100；每名学生的信息按照姓名、学号、5门课程成绩的顺序输入，共占三行。输入具体格式见样例。
+
+输出格式:
+姓名占一行；学号占一行；5门课程成绩中间用空格分开，最后一个成绩后是换行符，占一行；平均与总成绩用空格分隔，占一行，平均成绩保留两位小数；每名同学的信息后都再输出一个空行。
+注意：每名同学的信息后都再输出一个空行。
+
+输入样例:
+4
+xiaowang
+0821131699999
+87 98 79 90 68
+Liu Mengmeng
+0821131666666
+88 90 93 91 85
+Albert Einstein
+0821131477777
+75 87 100 66 64
+Bill Gates
+0821131588888
+65 58 77 60 61
+
+输出样例:
+Name:xiaowang
+ID:0821131699999
+Score:87 98 79 90 68
+average:84.40 total:422
+
+Name:Liu Mengmeng
+ID:0821131666666
+Score:88 90 93 91 85
+average:89.40 total:447
+
+Name:Albert Einstein
+ID:0821131477777
+Score:75 87 100 66 64
+average:78.40 total:392
+
+Name:Bill Gates
+ID:0821131588888
+Score:65 58 77 60 61
+average:64.20 total:321
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+struct Student
+{
+    char name[21];
+    char num[21];
+    int grads[5];
+    double eve;
+    int total;
+};
+
+int main(){
+    struct Student *stuPtr=NULL;
+    int n;
+    scanf("%d",&n);
+    getchar();
+    struct Student stuArray[n];
+    for(int k=0;k<n;k++){
+    gets(stuArray[k].name);
+        scanf("%s",stuArray[k].num);
+        getchar();
+        stuArray[k].total=0;
+        for(int i=0;i<5;i++){
+            scanf("%d",&stuArray[k].grads[i]);
+            stuArray[k].total+=stuArray[k].grads[i];
+        }
+        stuArray[k].eve=stuArray[k].total/5.0;
+        stuPtr=&stuArray[k];
+        getchar();
+        printf("Name:%s\n",stuPtr->name);
+        printf("ID:%s\n",stuPtr->num);
+        printf("Score:%d %d %d %d %d\n",stuPtr->grads[0],stuPtr->grads[1],stuPtr->grads[2],stuPtr->grads[3],stuPtr->grads[4]);
+        printf("average:%.2lf total:%d\n\n",stuPtr->eve,stuPtr->total);
+    }
+    return 0;
+}
+
+
+stuPtr=&stuArray[k];和*stuPtr=stuArray[k];有甚区别
+这是一个非常重要的 C 语言指针概念问题。两者的区别极其关键，理解不当会导致严重错误。
+
+核心区别
+stuPtr = &stuArray[k]; → 赋值指针的地址（让指针指向某个位置）
+
+*stuPtr = stuArray[k]; → 赋值指针指向的内容（修改指针指向位置的数据）
+
+详细分析
+假设有以下定义：
+
+c
+typedef struct {
+    char name[20];
+    int score;
+} STUDENT;
+
+STUDENT stuArray[5] = {{"Alice", 85}, {"Bob", 92}, {"Charlie", 78}};
+STUDENT stuTemp = {"Temp", 0};
+STUDENT *stuPtr;  // 声明一个指向 STUDENT 的指针
+情况1：stuPtr = &stuArray[k];
+c
+stuPtr = &stuArray[1];  // stuPtr 指向 stuArray[1]（Bob）
+内存示意图：
+
+text
+stuPtr   →   stuArray[1] (地址: 0x1008)
+            ↓
+            {"Bob", 92}
+效果：
+
+stuPtr 现在存储的是 stuArray[1] 的地址
+
+通过 stuPtr 可以直接访问和修改 stuArray[1] 的内容
+
+原始数组 stuArray[1] 和指针 stuPtr 指向同一个内存位置
+
+示例代码：
+
+c
+stuPtr = &stuArray[1];
+printf("stuPtr->name: %s\n", stuPtr->name);  // 输出: Bob
+printf("stuArray[1].name: %s\n", stuArray[1].name);  // 输出: Bob
+
+// 修改指针指向的内容，会直接影响原数组
+stuPtr->score = 100;
+printf("stuArray[1].score: %d\n", stuArray[1].score);  // 输出: 100
+情况2：*stuPtr = stuArray[k];
+c
+stuPtr = &stuTemp;  // 必须先让 stuPtr 指向有效的内存！
+*stuPtr = stuArray[2];  // 将 stuArray[2] 的内容复制到 stuPtr 指向的位置
+内存示意图：
+
+text
+stuPtr   →   stuTemp (地址: 0x2000)
+            ↓
+            执行前: {"Temp", 0}
+            执行后: {"Charlie", 78}  ← 复制过来的副本
+效果：
+
+将 stuArray[2] 的内容完整复制到 stuPtr 指向的内存位置
+
+stuArray[2] 和 stuPtr 指向的位置是两个独立的内存块
+
+修改其中一个不会影响另一个
+
+示例代码：
+
+c
+stuPtr = &stuTemp;  // stuPtr 指向 stuTemp
+printf("执行复制前 stuTemp.name: %s\n", stuTemp.name);  // 输出: Temp
+
+*stuPtr = stuArray[2];  // 复制操作
+printf("执行复制后 stuTemp.name: %s\n", stuTemp.name);  // 输出: Charlie
+printf("stuPtr->name: %s\n", stuPtr->name);  // 输出: Charlie
+
+// 修改 stuTemp 不会影响 stuArray[2]
+stuTemp.score = 60;
+printf("stuArray[2].score: %d\n", stuArray[2].score);  // 输出: 78 (不变)
+常见错误案例
+错误1：野指针解引用
+c
+STUDENT *stuPtr;  // 未初始化的指针
+*stuPtr = stuArray[0];  // ❌ 运行时错误！stuPtr 指向随机地址
+错误2：错误的指针赋值
+c
+STUDENT *stuPtr;
+stuPtr = stuArray[1];  // ❌ 类型不匹配！stuArray[1] 是结构体，不是地址
+// 应该写成：stuPtr = &stuArray[1];
+对比表格
+方面	stuPtr = &stuArray[k];	*stuPtr = stuArray[k];
+操作类型	指针赋值（改变指针的指向）	内容赋值（复制数据）
+等价的普通变量	int a = b;	*a = b;（如果 a 是指针）
+对原数组的影响	通过指针可以直接修改原数组	创建副本，不影响原数组
+内存关系	共享同一块内存	两块独立的内存
+前置要求	无特殊要求	stuPtr 必须已指向有效内存
+语法检查	stuPtr 必须是指针	stuPtr 必须是指针且已初始化
+实际应用场景
+场景1：遍历数组（使用指针指向）
+c
+STUDENT *stuPtr;
+for(int i = 0; i < 5; i++) {
+    stuPtr = &stuArray[i];  // 指针指向数组元素
+    printf("%s: %d\n", stuPtr->name, stuPtr->score);
+}
+场景2：复制结构体数据
+c
+STUDENT student1 = {"Alice", 85};
+STUDENT student2;
+STUDENT *ptr = &student2;
+
+*ptr = student1;  // 复制 student1 到 student2
+// 等价于：student2 = student1;
+
+printf("%s\n", student2.name);  // 输出: Alice
+场景3：指针数组（常见数据结构）
+c
+STUDENT *ptrArray[3];  // 指针数组
+for(int i = 0; i < 3; i++) {
+    ptrArray[i] = &stuArray[i];  // 每个指针指向一个结构体
+}
+
+// 通过指针数组访问
+printf("%s\n", ptrArray[1]->name);  // 输出: Bob
+记忆技巧
+看星号 * 的位置：
+
+stuPtr = ... → 改变指针本身（让它指向别处）
+
+*stuPtr = ... → 改变指针指向的内容
+
+类比普通变量：
+
+int a = 10; → 变量赋值
+
+int *p = &a; → 指针指向变量（相当于 stuPtr = &stuArray[k]）
+
+*p = 20; → 修改变量的值（相当于 *stuPtr = stuArray[k]）
+
+简单口诀：
+
+text
+无*改指向，有*改内容。
+指向用&符，内容直接赋。
+总结
+stuPtr = &stuArray[k] 是建立"引用关系"——让指针指向某个已存在的对象，操作指针就是操作原对象。
+
+*stuPtr = stuArray[k] 是进行"值复制"——把数据从一个地方复制到另一个地方，创建独立的副本。
+
+理解这个区别是掌握 C 语言指针的关键，尤其是在处理链表、树等数据结构时，正确的指针操作至关重要。
+
+int main(){
+    struct Student *stuPtr=NULL;
+    int n;
+    scanf("%d",&n);
+    getchar();
+    struct Student stuArray[n];
+    for(int k=0;k<n;k++){
+    gets(stuArray[k].name);
+        scanf("%s",stuArray[k].num);
+        getchar();
+        stuArray[k].total=0;
+        for(int i=0;i<5;i++){
+            scanf("%d",&stuArray[k].grads[i]);
+            stuArray[k].total+=stuArray[k].grads[i];
+        }
+        stuArray[k].eve=stuArray[k].total/5.0;
+        *stuPtr=stuArray[k];
+        getchar();
+        printf("Name:%s\n",stuPtr->name);
+        printf("ID:%s\n",stuPtr->num);
+        printf("Score:%d %d %d %d %d\n",stuPtr->grads[0],stuPtr->grads[1],stuPtr->grads[2],stuPtr->grads[3],stuPtr->grads[4]);
+        printf("average:%.2lf total:%d\n\n",stuPtr->eve,stuPtr->total);
+    }
+    return 0;
+}
+为什么这里*stuPtr=stuArray[k];会报错
+这里报错是因为 stuPtr 是空指针（NULL），而你试图对它进行解引用操作 *stuPtr。
+
+问题分析
+c
+struct Student *stuPtr = NULL;  // stuPtr 初始化为 NULL（空指针）
+// ...
+*stuPtr = stuArray[k];  // ❌ 错误！试图向 NULL 指向的内存写入数据
+问题所在：
+
+stuPtr = NULL 表示指针不指向任何有效的内存地址
+
+*stuPtr 表示"访问 stuPtr 指向的内存"
+
+但你还没有为 stuPtr 分配任何有效的内存地址，就试图写入数据
+
+内存状态示意图
+text
+stuPtr → NULL（不指向任何地方）
+         ↓
+         无法访问的内存区域
+
+*stuPtr = stuArray[k];  ← 试图向"不存在的地址"写入数据 → 段错误（Segmentation Fault）
+解决方案
+根据你的代码逻辑，这里有几个修复方案：
+
+方案1：让指针指向数组元素（推荐）
+c
+int main(){
+    struct Student *stuPtr = NULL;
+    int n;
+    scanf("%d", &n);
+    getchar();
+    struct Student stuArray[n];
+    
+    for(int k = 0; k < n; k++){
+        // ... 读取数据到 stuArray[k] ...
+        
+        stuPtr = &stuArray[k];  // ✅ 让指针指向当前数组元素
+        
+        printf("Name:%s\n", stuPtr->name);
+        printf("ID:%s\n", stuPtr->num);
+        // ... 其他输出 ...
+    }
+    return 0;
+}
+方案2：动态分配内存（如果需要独立副本）
+c
+int main(){
+    struct Student *stuPtr = NULL;
+    int n;
+    scanf("%d", &n);
+    getchar();
+    struct Student stuArray[n];
+    
+    // 为指针分配内存
+    stuPtr = (struct Student*)malloc(sizeof(struct Student));
+    if(stuPtr == NULL) {
+        printf("内存分配失败\n");
+        return 1;
+    }
+    
+    for(int k = 0; k < n; k++){
+        // ... 读取数据到 stuArray[k] ...
+        
+        *stuPtr = stuArray[k];  // ✅ 现在可以了，stuPtr指向有效的内存
+        
+        printf("Name:%s\n", stuPtr->name);
+        printf("ID:%s\n", stuPtr->num);
+        // ... 其他输出 ...
+    }
+    
+    free(stuPtr);  // 释放内存
+    return 0;
+}
+方案3：直接使用数组元素（最简单）
+c
+int main(){
+    int n;
+    scanf("%d", &n);
+    getchar();
+    struct Student stuArray[n];
+    
+    for(int k = 0; k < n; k++){
+        // ... 读取数据到 stuArray[k] ...
+        
+        // 直接使用 stuArray[k]，不需要指针
+        printf("Name:%s\n", stuArray[k].name);
+        printf("ID:%s\n", stuArray[k].num);
+        printf("Score:%d %d %d %d %d\n", 
+               stuArray[k].grads[0], stuArray[k].grads[1],
+               stuArray[k].grads[2], stuArray[k].grads[3],
+               stuArray[k].grads[4]);
+        printf("average:%.2lf total:%d\n\n", 
+               stuArray[k].eve, stuArray[k].total);
+    }
+    return 0;
+}
+代码中的其他问题
+你的原始代码还有一些潜在问题：
+
+1. 混合使用 gets() 和 scanf()
+c
+gets(stuArray[k].name);  // ❌ gets() 已被弃用，不安全
+scanf("%s", stuArray[k].num);  // 读取字符串，但不能包含空格
+建议改为：
+
+c
+fgets(stuArray[k].name, sizeof(stuArray[k].name), stdin);
+stuArray[k].name[strcspn(stuArray[k].name, "\n")] = '\0';  // 去除换行符
+
+fgets(stuArray[k].num, sizeof(stuArray[k].num), stdin);
+stuArray[k].num[strcspn(stuArray[k].num, "\n")] = '\0';
+2. 完整修正后的代码
+c
+#include <stdio.h>
+#include <string.h>
+
+struct Student {
+    char name[50];
+    char num[20];
+    int grads[5];
+    int total;
+    double eve;
+};
+
+int main(){
+    int n;
+    printf("请输入学生数量: ");
+    scanf("%d", &n);
+    getchar();  // 消耗换行符
+    
+    struct Student stuArray[n];
+    
+    for(int k = 0; k < n; k++){
+        printf("\n--- 学生 %d ---\n", k+1);
+        
+        printf("姓名: ");
+        fgets(stuArray[k].name, sizeof(stuArray[k].name), stdin);
+        stuArray[k].name[strcspn(stuArray[k].name, "\n")] = '\0';
+        
+        printf("学号: ");
+        fgets(stuArray[k].num, sizeof(stuArray[k].num), stdin);
+        stuArray[k].num[strcspn(stuArray[k].num, "\n")] = '\0';
+        
+        stuArray[k].total = 0;
+        printf("请输入5门成绩: ");
+        for(int i = 0; i < 5; i++){
+            scanf("%d", &stuArray[k].grads[i]);
+            stuArray[k].total += stuArray[k].grads[i];
+        }
+        getchar();  // 消耗换行符
+        
+        stuArray[k].eve = stuArray[k].total / 5.0;
+        
+        // 使用指针指向当前学生（可选）
+        struct Student *stuPtr = &stuArray[k];
+        
+        // 输出学生信息
+        printf("\n学生信息:\n");
+        printf("Name: %s\n", stuPtr->name);
+        printf("ID: %s\n", stuPtr->num);
+        printf("Score: %d %d %d %d %d\n", 
+               stuPtr->grads[0], stuPtr->grads[1],
+               stuPtr->grads[2], stuPtr->grads[3],
+               stuPtr->grads[4]);
+        printf("average: %.2lf  total: %d\n", 
+               stuPtr->eve, stuPtr->total);
+    }
+    
+    return 0;
+}
+关键要点总结
+空指针不能解引用：*NULL 会导致程序崩溃（段错误）
+
+指针必须先指向有效内存，然后才能通过 *指针 访问或修改数据
+
+选择正确的指针使用方式：
+
+如果只是要访问现有数据：用 指针 = &变量
+
+如果要创建独立副本：先分配内存，再用 *指针 = 数据
+
+避免使用不安全的函数：用 fgets() 代替 gets()，用带长度限制的 scanf()
+
+记住这个基本原则：指针是地址，*指针 是地址里的内容。没有地址就不能访问内容。

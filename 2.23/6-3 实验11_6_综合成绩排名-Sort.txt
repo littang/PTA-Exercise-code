@@ -1,0 +1,10 @@
+void Sort(STUDENT a[],int size){
+    for(int i=0;i<size;i++){
+        for(int j=1;i+j<size;j++){
+            if(Comp(&a[i],&a[i+j])==0){
+                Swap(&a[i],&a[i+j]);
+            }
+        }
+    }
+}
+记得a[]取地址！！

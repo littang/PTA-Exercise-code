@@ -1,0 +1,155 @@
+7-4 实验11_7_学生信息管理系统
+分数 100
+作者 scs
+单位 北京邮电大学
+创建学生信息管理系统，具体要求如下：
+
+学生信息包括：学号 姓名 数学成绩 英语成绩 计算机成绩
+
+功能1：添加学生信息
+执行1时，输入学号，姓名，三门科目成绩；如果添加学生成功则输出“Add success”，如果学生已存在则输出“Students already exist”
+
+功能2：删除学生信息
+执行2时，输入学号信息；如果学生不存在，输出“Students do not exist”，如果存在，则输出“Delete success”
+
+功能3：更改学生成绩信息
+执行3时，输入学号信息；如果学生不存在，输出“Students do not exist”，如果存在，输出“Update success”
+
+功能4：显示学生平均分成绩
+执行4时，输入学号信息；如果学生不存在，输出“Students do not exist”，如果存在，则输出学生信息，如下格式：
+
+Student ID:2019989890
+
+Name:Jerry
+
+Average Score:89.3
+
+其中平均分为三门科目相加除以3，保留一位小数，每行之间换行。
+
+输入格式:
+第一行为一个整数n(0<n<130)，后边共n行，每一行表示执行一种功能。其中1，2，3，4分别对应执行上面4种功能，具体格式见输入样例。
+测试用例保证：学号和名字均为长度不超过10的字符串，各门课成绩为0到100之间的整数。
+特别提醒：当执行更改学生成绩操作时，无论学生是否存在，你的程序都要读入那三个成绩。否则会影响后续的输入。
+
+输出格式:
+输入样例:
+8
+1 201817123 Tom 89 80 76
+1 2019989890 Jerry 78 99 67
+4 201817123
+2 201817123
+4 201817123
+4 2019989890
+3 2019989890 79 90 99
+4 2019989890
+
+输出样例:
+Add success
+Add success
+Student ID:201817123
+Name:Tom
+Average Score:81.7
+Delete success
+Students do not exist
+Student ID:2019989890
+Name:Jerry
+Average Score:81.3
+Update success
+Student ID:2019989890
+Name:Jerry
+Average Score:89.3
+
+
+
+
+#include <stdio.h>
+#include <string.h>
+
+// 学生信息结构体
+typedef struct {
+    char id[12];      // 学号
+    char name[12];   // 姓名
+    int math;        // 数学成绩
+    int english;     // 英语成绩
+    int computer;    // 计算机成绩
+} Student;
+
+Student stu[150];   // 最多存储 130 个学生
+int count = 0;      // 当前学生人数
+
+// 根据学号查找学生，返回索引，找不到返回 -1
+int findStudent(const char *id) {
+    for (int i = 0; i < count; i++) {
+        if (strcmp(stu[i].id, id) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int main() {
+    int n, op;
+    scanf("%d", &n);
+
+    while (n--) {
+        scanf("%d", &op);
+        if (op == 1) {  // 添加学生
+            char id[12], name[12];
+            int math, english, computer;
+            scanf("%s %s %d %d %d", id, name, &math, &english, &computer);
+            
+            if (findStudent(id) != -1) {
+                printf("Students already exist\n");
+            } else {
+                strcpy(stu[count].id, id);
+                strcpy(stu[count].name, name);
+                stu[count].math = math;
+                stu[count].english = english;
+                stu[count].computer = computer;
+                count++;
+                printf("Add success\n");
+            }
+        } 
+        else if (op == 2) {  // 删除学生
+            char id[12];
+            scanf("%s", id);
+            int idx = findStudent(id);
+            if (idx == -1) {
+                printf("Students do not exist\n");
+            } else {
+                // 用最后一个学生覆盖要删除的学生
+                stu[idx] = stu[count - 1];
+                count--;
+                printf("Delete success\n");
+            }
+        } 
+        else if (op == 3) {  // 更改学生成绩
+            char id[12];
+            int math, english, computer;
+            scanf("%s %d %d %d", id, &math, &english, &computer);
+            int idx = findStudent(id);
+            if (idx == -1) {
+                printf("Students do not exist\n");
+            } else {
+                stu[idx].math = math;
+                stu[idx].english = english;
+                stu[idx].computer = computer;
+                printf("Update success\n");
+            }
+        } 
+        else if (op == 4) {  // 显示学生平均分
+            char id[12];
+            scanf("%s", id);
+            int idx = findStudent(id);
+            if (idx == -1) {
+                printf("Students do not exist\n");
+            } else {
+                double avg = (stu[idx].math + stu[idx].english + stu[idx].computer) / 3.0;
+                printf("Student ID:%s\n", stu[idx].id);
+                printf("Name:%s\n", stu[idx].name);
+                printf("Average Score:%.1f\n", avg);
+            }
+        }
+    }
+    return 0;
+}
