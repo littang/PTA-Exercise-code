@@ -1,0 +1,104 @@
+6-2 21点变种一
+分数 100
+作者 scs
+单位 北京邮电大学
+21点又名黑杰克（Blackjack），起源于法国，已流传到世界各地，有着悠久的历史。随着互联网的发展，二十一点开始走向网络时代。该游戏由2到6个人玩，使用除大小王之外的52张牌，游戏者的目标是使手中的牌的点数之和不超过21点且尽量大。
+大家手中扑克点数的计算规则是：2至9牌，按其原点数计算；K、Q、J和10牌都算作10点；A 牌（ace）既可算作1点也可算作11点，由玩家自己决定。当玩家停牌时，点数一律视为最大而尽量不爆（所谓爆了，就是超过21点），如A+9为20，A+4+8为13，A+3+A视为15。
+现有一种变种的21点，该变种增加新规则如下：一手牌中一定存在某种花色的张数最多，如果该花色的张数超过3张，则计算总牌点儿时需加5；如果该花色没有超过3张但超过了2张，则计算总牌点儿时需加2。产生加点儿后一手牌的点数仍然遵循最大且不爆。现请你写一段程序来计算变种规则下一手牌的点数。
+
+输入格式：
+共两行，第一行为一个整数n(1<n<10)，代表这手牌的张数；第二行是一个长度为2×n字符串，代表n张牌。每张牌都是由一个大写字母一个数字组成（大写字母在前），大写字母代表花色（其中A代表黑桃、B代表红桃、C代表梅花、D代表方块），数字代表牌面（其中1代表A牌，2到9依次代表2至9牌，K、Q、J和10牌均用0表示）。测试用例保证合法。
+输出格式：
+只有一行，为一个整数，代表输入的这手牌的点数。
+
+此题你需要实现两个函数。
+
+函数接口定义一：
+CARD * create(int n) ;
+其中 n 是用户传入的参数，该函数创建一个长度为 n的CARD类型（见裁判测试程序样例）的动态数组。如果申请内存成功，则函数须返回动态数组第一个元素的地址。否则返回NULL。
+
+函数接口定义二：
+int    getPoints(CARD * deck , int size) ;
+其中 deck 和 size 都是用户传入的参数。 deck 为指向存储一手牌的数组的指针； size 为数组中元素的个数。函数须返回这手牌的点数。注意，点数是有可能超过21点的，此时A牌一定按1点算。
+
+裁判测试程序样例：
+▾
+▾
+▾
+#include<stdio.h>
+#include<stdlib.h>
+
+#define        SUITS            4        //花色数量 
+#define        EXTRA_POINTS_2    5        //同色加分2
+#define        EXTRA_POINTS_1    2        //同色加分1
+#define        THRESHOLD_2        3        //加分门槛2
+#define        THRESHOLD_1        2        //加分门槛1
+
+struct card
+{
+    char    face; //牌面
+    char    suit; //花色
+};
+
+typedef struct card CARD ;
+
+CARD * create(int n) ;
+int    getPoints(CARD * deck , int size) ;
+
+int main()
+{
+    int        i , n;
+    CARD    *deck;
+    
+    scanf("%d" , &n) ;
+    deck = create(n) ;
+    if ( deck == NULL )
+        return -1 ; //这里的return是因为没有获得内存而直接结束程序。
+    getchar();
+    for ( i = 0 ; i < n ; i++ )
+        scanf("%c%c" ,  &deck[i].suit , &deck[i].face) ;
+    printf("%d\n" ,  getPoints(deck , n)) ;
+    
+    free(deck);
+    return 0;
+}
+
+
+/* 请在这里填写答案 */
+输入样例：
+3
+A1B3C1
+
+输出样例：
+15
+CARD * create(int n){
+  CARD *a = (CARD*)malloc(sizeof(CARD)*n);
+  if(a)return &a[0];
+  else return NULL;
+}
+int    getPoints(CARD * deck , int size){
+  int sum=0;
+  int anum=0;
+  int facenum[4]={0,0,0,0};
+  for(int i=0;i<size;i++){
+    if(deck[i].face>='2'&&deck[i].face<='9')sum+=(deck[i].face-'0');
+    else if(deck[i].face=='0')sum+=10;
+    else if(deck[i].face=='1')anum++;
+    facenum[deck[i].suit-'A']++;
+  }
+  int max=0;
+  for(int i=0;i<4;i++){
+    if(max<facenum[i])max=facenum[i];
+  }
+  if(max>3)sum+=5;
+  else if(max>2)sum+=2;
+
+  if(anum==0)return sum;
+  else {
+    if(sum+11+anum-1<=21){
+      return sum+11+anum-1;
+
+    }
+    else return sum+anum;
+  }
+}

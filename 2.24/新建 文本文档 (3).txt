@@ -1,0 +1,97 @@
+6-3 新计票方式一
+分数 100
+作者 scs
+单位 北京邮电大学
+新学期伊始，班级将启动班长选举工作。与往年不同，本次选举采用全新方式，具体规则如下：假设班里共有n个同学，每张票只能选一个人；每个人可以投0到n张票，但不能把票投给重复的人；每个同学投的票都有一个权值，这个权值就是该同学所获得的选票的张数；某位同学的最终分数是所有给他投了票的同学的权值的和，分数最高的当选班长。现请你写一段程序来计算一下每位同学的最终分数。
+
+输入格式：
+第一行为一个整数n(1<n<=100)，代表同学的总数；这些同学的编号为0到n-1。后边n行，每行代表一位同学获得的选票的情况；其中第1行代表0号同学的情况，第2行代表1号同学的情况，依此类推，第n行代表n-1号同学的情况；每行的格式均为若干用空格分隔的整数，其中第一个整数m代表该同学获得的选票的张数，后边m个整数为给他投票的同学的编号。测试用例保证合法。
+输出格式：
+共2×n行，每行一个整数。前n行依次为0到n-1号同学获得的票数，后n行依次为0到n-1号同学的分数。
+
+此题你需要写两个函数来完成。
+
+函数接口定义一：
+void points(int *votes , int **students , int num);
+其中 votes 、students和 num 都是用户传入的参数。  num是学生的总数；votes 是指向保存所有投票数据的一维int型数组的指针； students 指向一个一维int *型数组的指针。函数没有返回值。函数的功能是将保存在votes所指向数组中的每位同学的信息的首地址保存到students所指向的指针数组中。votes 所指向保存所有投票数据的一维int型数组的数据格式见裁判测试程序样例。
+
+函数接口定义二：
+void count( int **students , int * ranks , int num);
+其中 students 、ranks 和 num 都是用户传入的参数。 num是学生的总数；students 是指向保存每位同学的信息的首地址的指针数组的指针； ranks 是指向保存每位同学最终的分数数组的指针。函数没有返回值。函数的功能是将每位同学的最终得分依据编号保存在ranks 所指向的一维int *型数组中。
+
+裁判测试程序样例：
+▾
+▾
+▾
+#include<stdio.h>
+
+#define        MAX_NUMBER        100        //学生的最多数量 
+
+void points(int *votes , int **students , int num);
+void count( int **students , int * ranks , int num);
+
+int main()
+{
+    int        num , numOfVotes , i , j , k = 0;
+    int        *students[MAX_NUMBER];        //保存每个学生信息数组首地址的整型指针数组 
+    int        votes[MAX_NUMBER * (MAX_NUMBER + 1)];    //保存全部数据的整型数组 
+    int        ranks[MAX_NUMBER];// 保存每个学生的分数值的数组 
+    
+    //以下代码为输入数据的读入过程。
+    //其本质就是将所有num个同学的数据依次保存在一个一维数组votes中。 
+    scanf("%d" , &num) ;
+    for (i = 0 ; i < num ; i++){
+        scanf("%d" , &numOfVotes) ;    //读入每个学生获得的选票的张数
+        votes[k++] = numOfVotes;
+        for(j = 0 ; j < numOfVotes ; j++ , k++){
+            scanf("%d" , &votes[k]) ;        //读入每个学生的具体投票人 
+        }
+    }        
+   
+    points(votes , students , num);
+    for (i = 0 ; i < num ; i++)        //依次输出每个学生获得的选票的张数 
+        printf("%d\n" , students[i][0]) ; 
+        //函数points执行过后，students中的指针应该指向每个同学的数据的首地址
+        //所以其第0个单元即为该同学获得的选票的张数
+
+    count(students , ranks , num);
+    for (i = 0 ; i < num ; i++) //依次输出每个学生的分数值 
+        printf("%d\n" , ranks[i]) ; 
+            
+    return 0;
+}
+
+/* 请在这里填写答案 */
+输入样例：
+5
+5 0 1 2 3 4
+4 1 2 3 4
+2 0 1
+3 2 3 4
+3 1 2 3
+
+输出样例：
+5
+4
+2
+3
+3
+17
+12
+9
+8
+9
+void points(int *votes , int **students , int num){
+  for(int i=0;i<num;i++){
+    students[i]=votes;
+    votes=votes+votes[0]+1;
+  }
+}
+void count( int **students , int * ranks , int num){
+  for(int i=0;i<num;i++){
+    for(int j=1;j<=students[i][0];j++){
+      int k=students[i][j];
+      ranks[i]+=students[k][0];
+    }
+  }
+}

@@ -1,0 +1,66 @@
+6-1 字符去重
+分数 100
+作者 scs
+单位 北京邮电大学
+任意给定一个字符串str（长度大于0且小于100），该字符串只包含小写字母“a—z”。请你写一个函数把str中重复的字符去掉。
+
+输入格式：
+只有一行，为一个长度大于0且小于100且只包含小写字母“a—z”的字符串。代表待去重字符串。测试用例保证合法。
+
+输出格式：
+共两行，第一行为一个整数，为被删除字符的个数；第二行为一个字符串，为去重后的字符串。
+
+函数接口定义：
+int deduplicate(char *str);
+其中 str是用户传入的参数，为指向待去重字符串的指针。函数需返回删除字符的个数。函数的功能为如果在str中某个字符出现了两次或两次以上，则只保留从前向后数第一个出现的字符，且保留下来的字符要保持原有顺序。注意：去重后的字符串仍保存在原来的数组中。
+
+裁判测试程序样例：
+▾
+#include<stdio.h>
+ 
+#define        MAXLEN        100
+
+int deduplicate(char *str);
+
+int main()
+{
+    char    str[MAXLEN];
+    int        count; 
+
+    scanf("%s" , str);
+    count = deduplicate(str);
+    printf("%d\n%s\n" , count , str);
+
+    return 0;
+}
+
+/* 请在这里填写答案 */
+输入样例：
+bupttpubuppttt
+
+输出样例：
+10
+bupt
+int deduplicate(char *str){
+  int a[26]={0};
+  for(int i=0;str[i]!='\0';i++){
+    a[str[i]-'a']++;
+  }
+  char *src=str;
+  char *srr=str;
+  int num2=0;
+  while(*src!='\0'){
+    if(a[*src-'a']>0){
+      a[*src-'a']=-1;
+      *srr=*src;
+      srr++;
+    }
+    else if(a[*src-'a']==-1){
+      //*srr=*(src+1);
+      num2++;
+    }
+    src++;
+  }
+  *srr='\0';
+  return num2;
+}
