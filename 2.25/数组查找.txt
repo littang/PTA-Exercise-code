@@ -1,0 +1,50 @@
+7_2_数组查找
+题目描述
+在 n 个互不相同的整数中查找 m 个整数，若存在，则输出与之相邻的整数（前一个和后一个，如果存在），否则输出 NULL。
+
+输入格式
+第一行 n（0<n≤1000），第二行 n 个整数，第三行 m（0<m≤100），第四行 m 个整数。
+
+输出格式
+共 m 行，对应每个查询结果。
+
+样例输入
+text
+5
+89 7890 22 56 87
+6
+89 7890 22 56 87 999
+样例输出
+text
+7890
+89 22
+7890 56
+22 87
+56
+NULL
+
+#include<stdio.h>
+int main(){
+  int n,m;
+  scanf("%d",&n);
+  int a[n];
+  for(int i=0;i<n;i++){
+    scanf("%d",&a[i]);
+  }
+  scanf("%d",&m);
+  for(int i=0;i<m;i++){
+    int num;
+    int k=0;
+    scanf("%d",&num);
+    for(int j=0;j<n;j++){
+      if(a[j]==num){
+        k=1;
+        if(j==0)printf("%d\n",a[1]);
+        else if(j==n-1)printf("%d\n",a[n-1]);
+        else printf("%d %d\n",a[j-1],a[j+1]);
+      }
+    }
+    if(k==0)printf("NULL\n");
+  }
+  return 0;
+}
