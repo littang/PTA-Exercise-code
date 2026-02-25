@@ -1,0 +1,85 @@
+7-1 实验7_7_连续子序列
+题目描述
+判断序列 B 是否是序列 A 的连续子序列。
+
+输入格式
+两行，每行一串正整数以 -1 结尾，分别代表 A 和 B。
+
+输出格式
+若 B 是 A 的连续子序列，输出 ListB is the sub sequence of ListA.，否则输出 ListB is not the sub sequence of ListA.
+
+样例输入
+text
+5 4 3 2 1 -1
+3 2 1 -1
+样例输出
+text
+ListB is the sub sequence of ListA.
+
+边界条件：外层循环 i<=lena-lenb 确保不会越界。
+
+匹配检查：内层循环逐一比较，若全相等则成功。
+
+注意：B 可能比 A 长，此时直接输出 not。
+
+
+
+
+
+//千万不能直接动A序列，因为如果有重复的元素就会很难办
+//比如·
+//1 2 3 4 5 1 2 3 4 5 6 7 8 -1
+//2 2 2 1 2 3 4 5 6 7 8 -1
+//那前面也不好弄，还是这个方法最好
+
+#include<stdio.h>
+int main(){
+  int a[10000],b[10000];
+  int num;
+  int la=0,lb=0;
+
+  scanf("%d",&num);
+  while(num!=-1){
+    a[la++]=num;
+    scanf("%d",&num);
+  }
+
+  //这里的循环设置也是有讲究的，尽量不把-1加入数列
+  //而且这里的scanf("%d",&num);是放在下面的
+  scanf("%d",&num);
+  while(num!=-1){
+    b[lb++]=num;
+    scanf("%d",&num);
+  }
+
+  int match=1;
+  int found=0;
+
+  //注意下面双循环，外循环要放慢点的
+  //因为是按照B序列前进判断，所以要以B序列作为内循环
+  //注意变量的设置，match就是判断这一个元素是否对上
+  //found就是最终判断是否为连续子列
+  //而且这里做否定判断显然是更加方便的，可以直接否定
+  //而做肯定判断显然更困难
+
+  for(int i=0;i<=la-lb;i++){
+    match=1;
+    for(int j=0;match&&j<lb;j++){
+      if(a[i+j]!=b[j]){
+        match=0;
+      }
+    }
+    if(match==1){
+      found=1;
+    }
+  }
+
+  if(lb>la){
+    found=0;
+  }
+
+  if(found)printf("ListB is the sub sequence of ListA.");
+  else printf("ListB is not the sub sequence of ListA.");
+
+  return 0;
+}
