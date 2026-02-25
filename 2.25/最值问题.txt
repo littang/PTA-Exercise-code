@@ -1,0 +1,84 @@
+7-3 最值问题
+题目描述
+求 N 个数中的最大值和次大值（严格小于最大值），可能有重复值。
+
+输入格式
+第一行 T（0<T<20），表示测试组数。每组第一行 N（1<N≤1000），第二行 N 个正整数。
+
+输出格式
+每组输出最大值和次大值，空格分隔。
+
+样例输入
+text
+2
+5
+1 2 3 4 5
+4
+2 2 2 3
+样例输出
+text
+5 4
+3 2
+
+#include<stdio.h>
+int main(){
+  int t;
+  scanf("%d",&t);
+  for(int i=0;i<t;i++){
+    int n;
+    scanf("%d",&n);
+    int a[n];
+    int max=-1;
+    int cmax=-2;
+    for(int j=0;j<n;j++){
+      scanf("%d",&a[j]);
+      if(a[j]>max){
+        cmax=max;
+        max=a[j];
+      }
+      else if(a[j]>cmax&&a[j]!=max){
+        //这里如果a[j]==max,那么cmax也变成了最大值则不合题意
+        cmax=a[j];
+      }
+    }
+    printf("%d %d\n",max,cmax);
+  }
+  return 0;
+}
+
+如果没有次大值严格小于最大值，那么
+#include<stdio.h>
+int main() {
+    int t;
+    scanf("%d", &t);
+    for (int i = 0; i < t; i++) {
+        int n;
+        scanf("%d", &n);
+        int a[n];
+        int max = -1;
+        int cmax = -2;  // 初始化为一个比任何可能值都小的数
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &a[j]);
+            if (a[j] > max) {
+                cmax = max;
+                max = a[j];
+            } else if (a[j] > cmax && a[j] != max) {
+                cmax = a[j];
+            }
+        }
+        // 若全相等，则 cmax 仍为 -2，此时次大值不存在，可根据题目要求处理
+        if (cmax == -1) {
+		//这里不要写-2，因为在经过上面的分支后，cmax变成了max的-1；
+		//这是最直接的
+            cmax = max;  // 输出两个相同的最大值（注意这不满足“严格小于”）
+        }
+        printf("%d %d\n", max, cmax);
+    }
+    return 0;
+}
+
+
+
+
+
+
