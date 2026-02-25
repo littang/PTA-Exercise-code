@@ -1,0 +1,34 @@
+二进制的位数
+题目描述
+递归求非负十进制整数 n 的二进制位数。
+
+函数接口
+c
+int countBinary(int n);
+裁判测试程序样例
+c
+#includestdio.h
+int countBinary(int);
+int main()
+{
+    int n;
+    scanf(%d,&n);
+    printf(%dn,countBinary(n));
+    return 0;
+}
+输入样例
+text
+13
+输出样例
+text
+4
+参考代码
+c
+int countBinary(int n){
+    if(n==0  n==1) return 1;
+    else return countBinary(n2) + 1;
+}
+关键要点
+递归定义：二进制位数 = 去掉最低位后的位数 + 1。
+
+递归出口：n 为0或1时，位数为1。

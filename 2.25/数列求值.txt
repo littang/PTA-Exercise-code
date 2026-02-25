@@ -1,0 +1,37 @@
+数列求值
+题目描述
+递归求数列 s = 1 + a + a² + ... + aⁿ⁺¹。
+
+函数接口
+c
+int evaluation(int n, int a);
+裁判测试程序样例
+c
+#include stdio.h
+int evaluation(int n,int a) ;
+int main()
+{
+    int n , a ; 
+    scanf(%d%d,&n,&a);       
+    printf(%dn,evaluation(n,a));
+    return 0;
+}
+输入样例
+text
+1 2
+输出样例
+text
+7
+参考代码
+
+c
+int evaluation(int n, int a){
+    if(n == 0) return a + 1;
+    else return a  evaluation(n-1, a) + 1;
+}
+
+关键要点
+递推关系：s(n) = a  s(n-1) + 1，其中 s(0) = 1 + a。
+
+注意：指数项数 n+1 项，递归次数为 n+1。
+

@@ -1,0 +1,39 @@
+最大公约数
+题目描述
+递归求两个正整数的最大公约数（GCD）。
+
+函数接口
+c
+int GCD(int a, int b);
+裁判测试程序样例
+c
+#include<stdio.h>
+int GCD(int a , int b );
+int main()
+{
+    int a , b ;
+    scanf("%d%d", &a , &b );
+    printf( "%d\n" , GCD( a, b ) ) ;
+    return 0 ;    
+}
+输入样例
+text
+32 48
+输出样例
+text
+16
+
+#include<stdio.h>
+int GCD(int a , int b );
+int main()
+{
+    int a , b ;
+    scanf("%d%d", &a , &b );
+    printf( "%d\n" , GCD( a, b ) ) ;
+    return 0 ;    
+}
+
+int GCD(int a,int b){
+  if(b==0)return a;
+  else return GCD(b,a%b);
+}

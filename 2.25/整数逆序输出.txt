@@ -1,0 +1,36 @@
+整数逆序输出
+题目描述
+递归逆序输出整数 n（n0，末尾不为0）。
+
+函数接口
+c
+void reverse(int n);
+裁判测试程序样例
+c
+#include stdio.h
+void reverse(int n);
+int main()
+{
+    int n;
+    scanf(%d,&n);
+    reverse(n);
+    printf(n);
+    return 0;
+}
+输入样例
+text
+1234
+输出样例
+text
+4321
+参考代码
+c
+void reverse(int n){
+    if(n==0) return;
+    printf(%d, n%10);
+    reverse(n10);
+}
+关键要点
+递归思路：先输出个位，再递归处理剩余部分。
+
+注意：题目要求递归，不能用循环。

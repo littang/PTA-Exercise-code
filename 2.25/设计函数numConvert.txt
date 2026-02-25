@@ -1,0 +1,70 @@
+设计函数numConvert
+题目描述
+将 n 进制数 number 转换为 m 进制数并返回（2≤n,m≤10）。
+
+函数接口
+c
+int numConvert(int number, int n, int m);
+裁判测试程序样例
+c
+#include stdio.h
+int numConvert(int,int,int);
+int main()
+{
+    int number , m , n ;
+    scanf(%d%d%d,&number,&n,&m);
+    printf(%dn,numConvert(number,n,m));
+    return 0 ;
+}
+输入样例一
+text
+110 2 3
+输出样例一
+text
+20
+输入样例二
+text
+666666 9 10
+输出样例二
+text
+398580
+
+递归
+int numNto2(int number,int n){
+  if(number<n)return number;
+  else return n*numNto2(number/10,n)+number%10;
+}
+int num2toM(int number,int m){
+  if(number<m)return number;
+  else return 10*num2toM(number/m,m)+number%m; 
+}
+int numConvert(int number, int n, int m){
+  int nu=numNto2(number,n);
+  return num2toM(nu,m);
+}
+
+循环
+// 辅助函数：将 n 进制数转换为十进制数
+int toDecimal(int num, int base){
+    int dec = 0, factor = 1;
+    while(num > 0){
+        dec += (num % 10) * factor;
+        factor *= base;
+        num /= 10;
+    }
+    return dec;
+}
+// 辅助函数：将十进制数转换为 m 进制数
+int fromDecimal(int dec, int base){
+    int result = 0, factor = 1;
+    while(dec > 0){
+        result += (dec % base) * factor;
+        factor *= 10;
+        dec /= base;
+    }
+    return result;
+}
+int numConvert(int number, int n, int m){
+    int dec = toDecimal(number, n);
+    return fromDecimal(dec, m);
+}

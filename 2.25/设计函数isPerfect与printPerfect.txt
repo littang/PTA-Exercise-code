@@ -1,0 +1,60 @@
+设计函数isPerfect与printPerfect
+题目描述
+判断一个数是否为完全数（等于其真因子之和），并打印其因子分解式。
+
+函数接口
+c
+int isPerfect(int n);
+void printPerfect(int n);
+裁判测试程序样例
+c
+#include <stdio.h>
+int isPerfect(int);
+void printPerfect(int);
+int main()
+{
+    int i,a,b,count;
+    scanf("%d%d",&a,&b);
+    count = 0 ;
+    for(i=a;i<=b;i++)
+    {
+        if (isPerfect(i)) 
+        {
+            printPerfect(i);
+            count ++ ;
+        }        
+    }
+    printf("The total number is %d.\n",count);
+    return 0 ;
+}
+输入样例
+text
+1 10000
+输出样例
+text
+6=1+2+3
+28=1+2+4+7+14
+496=1+2+4+8+16+31+62+124+248
+8128=1+2+4+8+16+32+64+127+254+508+1016+2032+4064
+The total number is 4.
+
+
+
+int isPerfect(int n){
+  int sum=0;
+  for(int i=2;i<n;i++){
+    if(n%i==0)sum+=i;
+  }
+  sum++;
+  if(n!=1&&sum==n)return 1;
+  else return 0;
+}
+
+void printPerfect(int n){
+  int sum=0;
+  printf("%d=1",n);
+  for(int i=2;i<n;i++){
+    if(n%i==0)printf("+%d",i);
+  }
+  printf("\n");
+}
