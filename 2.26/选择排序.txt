@@ -1,0 +1,60 @@
+选择排序
+题目描述
+实现选择排序，输出每一趟排序后的结果。
+
+函数接口
+c
+void selectSort(int data[], int elementCount);
+int findMin(int data[], int startLoc, int endLoc);
+void outputData(int data[], int elementCount);
+裁判测试程序样例
+c
+#include<stdio.h>
+void selectSort(int data[],int elementCount);
+int findMin(int data[], int startLoc, int endLoc);
+void outputData(int data[],int elementCount);
+int main()
+{
+    int n , i, num[1010] ;
+    scanf("%d",&n); 
+    for( i = 0 ; i < n ; i++ ) scanf("%d",&num[i]) ;
+    selectSort(num,n) ; 
+    return 0 ;
+}
+输入样例
+text
+8
+49 38 65 97 76 13 27 4
+输出样例
+text
+4 38 65 97 76 13 27 49
+4 13 65 97 76 38 27 49
+4 13 27 97 76 38 65 49
+4 13 27 38 76 97 65 49
+4 13 27 38 49 97 65 76
+4 13 27 38 49 65 97 76
+4 13 27 38 49 65 76 97
+
+int findMin(int data[], int startLoc, int endLoc){
+    int minIdx = startLoc;
+    for(int i=startLoc+1; i<=endLoc; i++){
+        if(data[i] < data[minIdx]) minIdx = i;
+    }
+    return minIdx;
+}
+void outputData(int data[], int elementCount){
+    printf("%d", data[0]);
+    for(int i=1; i<elementCount; i++) printf(" %d", data[i]);
+    printf("\n");
+}
+void selectSort(int data[], int elementCount){
+    for(int i=0; i<elementCount-1; i++){
+        int minIdx = findMin(data, i, elementCount-1);
+        if(minIdx != i){
+            int temp = data[i];
+            data[i] = data[minIdx];
+            data[minIdx] = temp;
+        }
+        outputData(data, elementCount);
+    }
+}
