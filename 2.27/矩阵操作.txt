@@ -1,0 +1,50 @@
+矩阵操作
+题目描述
+求矩阵中指定坐标周围数字的和。
+
+输入格式
+第一行 m,n，接着 m 行 n 列整数，最后一行 x,y 指定坐标（1-based）。
+
+输出格式
+周围数字的和。
+
+样例输入
+text
+5 6
+1 2 3 4 5 6
+7 8 9 10 11 12
+13 14 15 16 17 18
+19 20 21 22 23 24
+25 26 27 28 29 30
+2 2
+样例输出
+text
+64
+参考代码
+c
+#includestdio.h
+int main(){
+    int n,m;
+    scanf(%d%d,&n,&m);
+    int a[n+2][m+2];
+    for(int i=0;in+2;i++)
+        for(int j=0;jm+2;j++)
+            a[i][j]=0;
+    for(int i=1;i=n;i++)
+        for(int j=1;j=m;j++)
+            scanf(%d,&a[i][j]);
+    int x,y;
+    scanf(%d%d,&x,&y);
+    int sum = -a[x][y];   减去自身
+    for(int i=x-1;i=x+1;i++)
+        for(int j=y-1;j=y+1;j++)
+            sum += a[i][j];
+    printf(%d,sum);
+    return 0;
+}
+关键要点
+边界处理：数组周围加一圈0，避免越界。
+
+坐标转换：输入为1-based，代码中用1-based索引。
+
+求和：循环8邻域，最后减去自身。

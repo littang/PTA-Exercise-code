@@ -1,0 +1,60 @@
+推销员的便条
+题目描述
+计算每个销售员（1-4）每种产品（1-5）的销售额，输出表格。
+
+输入格式
+第一行 n，后面 n 组便条，每组：销售员代号、产品代号、销售额。
+
+输出格式
+6行5列矩阵（6行代表产品1-5和总计行，5列代表销售员1-4和总计列），保留一位小数，用tab分隔。
+
+样例输入
+text
+4
+1 1 35.6
+1 2 23.1
+1 1 89.3
+4 5 22.6
+样例输出
+text
+124.9    0.0    0.0    0.0    124.9
+23.1    0.0    0.0    0.0    23.1
+0.0    0.0    0.0    0.0    0.0
+0.0    0.0    0.0    0.0    0.0
+0.0    0.0    0.0    22.6    22.6
+148.0    0.0    0.0    22.6    170.6
+
+
+#include<stdio.h>
+int main(){
+  int n;
+  scanf("%d",&n);
+  double a[6][5]={0.0};
+  for(int i=0;i<n;i++){
+    int seller,product;
+    double aa;
+    scanf("%d%d",&seller,&product);
+    scanf("%lf",&aa);
+    product-=1;seller-=1;
+    a[product][seller]+=aa;
+  }
+  for(int j=0;j<4;j++){
+    for(int i=0;i<5;i++){
+      a[5][j]+=a[i][j];
+    }
+  }
+  for(int i=0;i<=5;i++){
+    for(int j=0;j<4;j++){
+      a[i][4]+=a[i][j];
+    }
+  }
+  for(int i=0;i<6;i++){
+    for(int j=0;j<5;j++){
+      if(j==0)printf("%.2lf",a[i][j]);
+      else printf("\t%.2lf",a[i][j]);
+    }
+    printf("\n");
+  }
+  return 0;
+}
+
