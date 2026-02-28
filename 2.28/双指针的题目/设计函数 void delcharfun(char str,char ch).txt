@@ -1,0 +1,56 @@
+设计函数 void delcharfun(char *str,char ch)
+题目描述
+从字符串中删除指定字符（区分大小写）。
+
+函数接口
+c
+void delcharfun(char *str, char ch);
+裁判测试程序样例
+c
+#include<stdio.h>
+void delcharfun(char *str,char ch);
+int main()
+{
+    char ch,str[110];
+    scanf("%s",str);
+    getchar();
+    scanf("%c",&ch);
+    delcharfun(str,ch);
+    printf("%s\n",str);
+    return 0;    
+}
+输入样例
+text
+abcABCabc#
+b
+输出样例
+text
+acABCac#
+参考代码
+c
+
+
+void delcharfun(char *str, char ch){
+    char *read = str;
+    char *write = str;
+//因为原来的指针还是指向原来的第一个内容，所以必须改动其内容
+    while(*read){
+        if(*read != ch){
+            *write = *read;
+		//这里和查找第一个开头的那个题不一样，这里要对原来的指针所指向的内容进行更改
+		//所以必须要有这里的等于，相当于对齐
+            write++;
+        }
+        read++;
+    }
+    *write = '\0';
+//这里也有体现必须改动其内容
+}
+
+
+
+当 *read 不等于要删除的字符 ch 时，执行 *write = *read，这会把 read 当前指向的字符复制到 write 当前指向的位置。因为 write 最初指向原字符串的开头，所以这一步实际上是在原地覆盖原字符串的内容。
+关键要点
+双指针法：读指针遍历，写指针仅当字符保留时前进。
+
+原地删除：最后写指针处加结束符。
