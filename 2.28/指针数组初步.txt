@@ -44,6 +44,13 @@ int getString(char *source, char *strPtr[]){
     }
     return j;
 }
+关键要点
+指针记录：遇到单词开头记录地址。
+
+空格替换：将空格改为 '\0'，使单词成为独立字符串。
+
+状态标记：inWord 避免重复记录同一单词。
+
 
 
 正确示范
@@ -67,4 +74,5 @@ int getString(char *source, char *strPtr[]){
         }
     }
     return j;
+
 }
