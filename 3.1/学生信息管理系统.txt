@@ -1,0 +1,125 @@
+学生信息管理系统
+题目描述
+实现添加、删除、修改、查询学生信息的功能。
+
+输入格式
+第一行 n，后面 n 行每行一个操作，具体格式见原题。
+
+输出格式
+对应每个操作输出结果。
+
+样例输入
+text
+8
+1 201817123 Tom 89 80 76
+1 2019989890 Jerry 78 99 67
+4 201817123
+2 201817123
+4 201817123
+4 2019989890
+3 2019989890 79 90 99
+4 2019989890
+样例输出
+text
+Add success
+Add success
+Student ID201817123
+NameTom
+Average Score81.7
+Delete success
+Students do not exist
+Student ID2019989890
+NameJerry
+Average Score81.3
+Update success
+Student ID2019989890
+NameJerry
+Average Score89.3
+
+//switch语句不要忘记break；
+
+#include<stdio.h>
+#include<string.h>
+typedef struct {
+    char name[11];
+    char id[11];
+    int math;
+    int en;
+    int com;
+}stu;
+stu student[150];
+int count=0;
+int findId(char *id){
+    for(int i=0;i<count;i++){
+        if(strcmp(student[i].id,id)==0){
+            return i;
+        }
+    }
+    return -1;
+}
+int main(){
+    int n;
+    scanf("%d",&n);
+    int choice;
+    for(int i=0;i<n;i++){
+        scanf("%d",&choice);
+        char id[11],name[11];
+        int math,en,com;
+        getchar();
+        scanf("%s",id);
+        // scanf("%s%d%d%d",name,&math,&en,&com);
+        switch (choice)
+        {
+        case 1:
+            if(findId(id)==-1){
+                scanf("%s%d%d%d",name,&math,&en,&com);
+                strcpy(student[count].name,name);
+                strcpy(student[count].id,id);
+                student[count].math=math;student[count].en=en;student[count].com=com;
+                printf("Add success\n");
+                count++;
+            }
+            else{
+                scanf("%s%d%d%d",name,&math,&en,&com);
+                printf("Students already exist\n");
+            }
+            break;
+        case 2:
+            if(findId(id)==-1){
+                printf("Students do not exist\n");
+            }
+            else{
+                int idx=findId(id);
+                student[idx]=student[count-1];
+                count--;
+                printf("Delete success\n");
+            }
+            break;
+        case 3:
+            if(findId(id)==-1){
+                scanf("%d%d%d",&math,&en,&com);
+                printf("Students do not exist\n");
+            }
+            else{
+                scanf("%d%d%d",&math,&en,&com);
+                student[findId(id)].math=math;
+                student[findId(id)].en=en;
+                student[findId(id)].com=com;
+                printf("Update success\n");
+            }
+            break;
+        case 4:
+            if(findId(id)==-1){
+                printf("Students do not exist\n");
+            }
+            else{
+                double eve=(student[findId(id)].math+student[findId(id)].en+student[findId(id)].com)/3.0;
+                printf("Student ID:%s\nName:%s\nAverage Score:%.1lf\n",student[findId(id)].id,student[findId(id)].name,eve);
+            }
+            break;
+        default:
+            break;
+        }
+    }
+    return 0;
+}

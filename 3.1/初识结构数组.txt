@@ -1,0 +1,80 @@
+初识结构数组
+题目描述
+输入 n 个学生信息，计算每个学生的平均成绩和总成绩，并输出。
+
+输入格式
+第一行 n，后面每个学生三行：姓名、学号、5门成绩。
+
+输出格式
+每个学生信息后跟一个空行，格式见样例。
+
+样例输入
+text
+4
+xiaowang
+0821131699999
+87 98 79 90 68
+Liu Mengmeng
+0821131666666
+88 90 93 91 85
+Albert Einstein
+0821131477777
+75 87 100 66 64
+Bill Gates
+0821131588888
+65 58 77 60 61
+样例输出
+text
+Namexiaowang
+ID0821131699999
+Score87 98 79 90 68
+average84.40 total422
+
+NameLiu Mengmeng
+ID0821131666666
+Score88 90 93 91 85
+average89.40 total447
+
+NameAlbert Einstein
+ID0821131477777
+Score75 87 100 66 64
+average78.40 total392
+
+NameBill Gates
+ID0821131588888
+Score65 58 77 60 61
+average64.20 total321
+
+#include<stdio.h>
+typedef struct {
+    char name[20];
+    char id[20];
+    int score[5];
+    int total;
+    double eva;
+}Stu;
+int main(){
+    int n;
+    scanf("%d",&n);
+    Stu a[n];
+    int sum=0;
+    for(int i=0;i<n;i++){
+        int sum=0;
+        getchar();
+        gets(a[i].name);
+        gets(a[i].id);
+        for(int j=0;j<5;j++){
+            scanf("%d",&a[i].score[j]);
+            sum+=a[i].score[j];
+        }
+        a[i].eva=(double)sum/5.0;
+        a[i].total=sum;
+    }
+    for(int i=0;i<n;i++){
+        printf("Name:%s\n",a[i].name);
+        printf("ID:%s\n",a[i].id);
+        printf("Score:%d %d %d %d %d\n",a[i].score[0],a[i].score[1],a[i].score[2],a[i].score[3],a[i].score[4]);
+        printf("average:%.2lf total:%d\n\n",a[i].eva,a[i].total);
+    }
+    return 0;
+}

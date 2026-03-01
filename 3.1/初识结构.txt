@@ -1,0 +1,58 @@
+初识结构
+题目描述
+输入一个学生信息，计算平均成绩和总成绩，将5门课成绩从高到低排序，然后按要求输出。
+
+输入格式
+姓名占一行，学号占一行，5门成绩占一行。
+
+输出格式
+见样例。
+
+样例输入
+text
+Liu Mengmeng
+0821131666666
+88 90 93 91 85
+样例输出
+text
+NameLiu Mengmeng
+ID0821131666666
+Score93 91 90 88 85
+average89.40 total447
+
+#include<stdio.h>
+typedef struct{
+    char name[30];
+    char id[30];
+    int scor[5];
+}STU;
+int main(){
+    STU a;
+    int sum=0;
+    double average;
+    gets(a.name);
+    scanf("%s",a.id);
+    for(int i=0;i<5;i++){
+        scanf("%d",&a.scor[i]);
+        sum+=a.scor[i];
+    }
+    for(int i=0;i<4;i++){
+        for(int j=0;j<4-i;j++){
+            if(a.scor[j]<a.scor[j+1]){
+                int aa=a.scor[j];
+                a.scor[j]=a.scor[j+1];
+                a.scor[j+1]=aa;
+            }       
+        }
+    }
+    average=(double)sum/5.0;
+    printf("Name:%s\n",a);
+    printf("ID:%s\n",a.id);
+    printf("Score:%d",a.scor[0]);
+    for(int i=1;i<5;i++){
+        printf(" %d",a.scor[i]);
+    }
+    printf("\naverage:%.2lf ",average);
+    printf("total:%d",sum);
+    return 0;
+}

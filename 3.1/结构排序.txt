@@ -1,0 +1,69 @@
+结构排序
+题目描述
+按总成绩降序排序，同分则按姓名字典序升序排序。
+
+输入格式
+第一行 n，后面 n 行每行姓名 总成绩。
+
+输出格式
+每个学生信息占两行：姓名和总成绩，后跟空行。
+
+样例输入
+text
+4
+AlbertEinstein 1328
+GeorgeWalkerBush 860
+LiuMengmeng 1475
+BillGates 1328
+样例输出
+text
+NameLiuMengmeng
+total1475
+
+NameAlbertEinstein
+total1328
+
+NameBillGates
+total1328
+
+NameGeorgeWalkerBush
+total860
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+typedef struct {
+    char name[20];
+    int grades;
+}Stu;
+void  sort(Stu *a,int size){
+    for(int i=0;i<size-1;i++){
+        for(int j=0;j<size-1-i;j++){
+            if(a[j].grades<a[j+1].grades){
+                Stu aa=a[j];
+                a[j]=a[j+1];
+                a[j+1]=aa;
+            }
+
+            else if(a[j].grades==a[j+1].grades&&strcmp(a[i].name,a[i+1].name)>0){
+                Stu aa=a[j];
+                a[j]=a[j+1];
+                a[j+1]=aa;
+            }
+        }
+    }
+}
+int main(){
+    int n;
+    scanf("%d",&n);
+    Stu a[n];
+    for(int i=0;i<n;i++){
+        scanf("%s%d",a[i].name,&a[i].grades);
+    }
+    sort(a,n);
+    for(int i=0;i<n;i++){
+        printf("Name:%s\n",a[i].name);
+        printf("total:%d\n\n",a[i].grades);
+    }
+    return 0;
+}
